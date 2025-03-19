@@ -5,9 +5,11 @@ import SearchBar from "@/components/SearchBar";
 export default async function Explore() {
   await connectDB();
 
-  let citraSubjects;
+  import { ObjectId } from "mongodb";
+
+  let citras;
   try {
-    citraSubjects = await Citra.aggregate([
+    citras = await Citra.aggregate([
       {
         $lookup: {
           from: "ratings",
@@ -60,11 +62,7 @@ export default async function Explore() {
             },
           },
           mode: {
-            $cond: {
-              if: { $gt: [{ $size: "$ratings" }, 0] },
-              then: { $arrayElemAt: ["$ratings.mode", 0] }, // Get first mode if exists
-              else: "Unknown",
-            },
+            $ifNull: [{ $arrayElemAt: ["$ratings.mode", 0] }, "Unknown"],
           },
         },
       },
@@ -80,30 +78,24 @@ export default async function Explore() {
           averageQuality: 1,
           averageDifficulty: 1,
           takeAgainPercentage: 1,
-          ratings: {
-            user: 1,
-            quality: 1,
-            difficulty: 1,
-            takeAgain: 1,
-            comment: 1,
-          }, // ✅ Pass user reviews to the frontend
         },
       },
+      { $sort: { totalRatings: -1 } }, // Sort by most-rated subjects
     ]);
 
-    if (!citraSubjects.length) {
+    if (!citras || citras.length === 0) {
       return (
         <p className="text-center text-lg font-semibold">
-          Citra subject not found.
+          No Citra subjects found.
         </p>
       );
     }
   } catch (error) {
-    console.error("Error fetching Citra:", error);
-
-    return <p className="text-red-500">Error loading Citra details.</p>;
+    console.error("Error fetching Citra subjects:", error);
+    return <p className="text-red-500">Error loading Citra subjects.</p>;
   }
-  const serializedCitraSubjects = citraSubjects.map((subject) => ({
+
+  const serializedCitraSubjects = citras.map((subject) => ({
     ...subject,
     _id: subject._id.toString(),
   }));

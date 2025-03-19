@@ -19,11 +19,10 @@ export default async function CitraDetails({
 
   await connectDB();
 
-  import { ObjectId } from "mongodb";
-
-  let citras;
+  let citra;
   try {
-    citras = await Citra.aggregate([
+    citra = await Citra.aggregate([
+      { $match: { _id: new ObjectId(id) } },
       {
         $lookup: {
           from: "ratings",
@@ -76,7 +75,11 @@ export default async function CitraDetails({
             },
           },
           mode: {
-            $ifNull: [{ $arrayElemAt: ["$ratings.mode", 0] }, "Unknown"],
+            $cond: {
+              if: { $gt: [{ $size: "$ratings" }, 0] },
+              then: { $arrayElemAt: ["$ratings.mode", 0] }, // Get first mode if exists
+              else: "Unknown",
+            },
           },
         },
       },
@@ -92,24 +95,31 @@ export default async function CitraDetails({
           averageQuality: 1,
           averageDifficulty: 1,
           takeAgainPercentage: 1,
+          ratings: {
+            user: 1,
+            quality: 1,
+            difficulty: 1,
+            takeAgain: 1,
+            comment: 1,
+          }, // ✅ Pass user reviews to the frontend
         },
       },
-      { $sort: { totalRatings: -1 } }, // Sort by most-rated subjects
     ]);
 
-    if (!citras || citras.length === 0) {
+    if (!citra.length) {
       return (
         <p className="text-center text-lg font-semibold">
-          No Citra subjects found.
+          Citra subject not found.
         </p>
       );
     }
   } catch (error) {
-    console.error("Error fetching Citra subjects:", error);
-    return <p className="text-red-500">Error loading Citra subjects.</p>;
+    console.error("Error fetching Citra:", error);
+
+    return <p className="text-red-500">Error loading Citra details.</p>;
   }
 
-  const subject = citras[0];
+  const subject = citra[0];
 
   return (
     <div className="container mx-auto px-6 py-10">
