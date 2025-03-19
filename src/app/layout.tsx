@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
 import Providers from "@/components/Providers";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased`}
           >
             {children}
+            <Analytics />
             <Toaster />
           </body>
         </html>
