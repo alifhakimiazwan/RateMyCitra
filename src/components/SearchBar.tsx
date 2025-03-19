@@ -45,17 +45,11 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
       );
     }
 
-    filtered.sort((a, b) => {
-      if (sortOrder === "highest") {
-        return b.averageDifficulty - a.averageDifficulty;
-      } else if (sortOrder === "lowest") {
-        return a.averageDifficulty - b.averageDifficulty;
-      } else if (sortOrder === "ratings-highest") {
-        return b.totalRatings - a.totalRatings;
-      } else {
-        return a.totalRatings - b.totalRatings;
-      }
-    });
+    filtered.sort((a, b) =>
+      sortOrder === "highest"
+        ? b.averageDifficulty - a.averageDifficulty
+        : a.averageDifficulty - b.averageDifficulty
+    );
 
     setFilteredSubjects(filtered);
   }, [query, selectedCitraType, sortOrder, subjects]);
@@ -88,7 +82,7 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
 
         <Select value={sortOrder} onValueChange={setSortOrder}>
           <SelectTrigger className="w-[250px]">
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder="Sort by Difficulty" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="highest">
@@ -96,12 +90,6 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
             </SelectItem>
             <SelectItem value="lowest">
               Sort by Difficulty (Lowest to Highest)
-            </SelectItem>
-            <SelectItem value="ratings-highest">
-              Sort by Total Ratings (Highest to Lowest)
-            </SelectItem>
-            <SelectItem value="ratings-lowest">
-              Sort by Total Ratings (Lowest to Highest)
             </SelectItem>
           </SelectContent>
         </Select>
