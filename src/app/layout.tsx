@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "react-hot-toast";
+import Providers from "@/components/Providers";
+import localFont from "next/font/local";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +14,10 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+const telegraf = localFont({
+  src: "./fonts/TelegrafRegular.otf",
+  variable: "--font-telegraf",
 });
 
 export const metadata: Metadata = {
@@ -23,12 +31,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <Providers>
+        <html lang="en">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased`}
+          >
+            {children}
+            <Toaster />
+          </body>
+        </html>
+      </Providers>
+    </ClerkProvider>
   );
 }
