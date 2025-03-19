@@ -2,20 +2,12 @@ import { connectDB } from "@/lib/db/mongodb";
 import { Citra } from "@/lib/db/schema";
 import SearchBar from "@/components/SearchBar";
 
-export default async function Explore({
-  searchParams,
-}: {
-  searchParams: { page?: string; query?: string };
-}) {
+export default async function Explore() {
   await connectDB();
-
-  const page = parseInt(searchParams.page ?? "1", 10);
-  const limit = 10;
-  const skip = (page - 1) * limit;
 
   const citraSubjects = await Citra.aggregate([
     { $sort: { name: 1 } }, // Sort alphabetically
-    { $skip: skip },
+
     {
       $lookup: {
         from: "ratings",
