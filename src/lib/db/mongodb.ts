@@ -5,12 +5,15 @@ interface MongooseCache {
   promise: Promise<mongoose.Connection> | null;
 }
 
-// ✅ Fix: Explicitly declare `global.mongoose`
 declare global {
+  // eslint-disable-next-line no-var, @typescript-eslint/no-explicit-any
   var mongoose: MongooseCache | undefined;
 }
 
-const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cached: MongooseCache = globalThis.mongoose || {
+  conn: null,
+  promise: null,
+};
 
 export async function connectDB() {
   if (cached.conn) return cached.conn; // ✅ Return cached connection if exists
@@ -25,7 +28,7 @@ export async function connectDB() {
   }
 
   cached.conn = await cached.promise;
-  global.mongoose = cached; // ✅ Assign back to `global.mongoose`
+  globalThis.mongoose = cached; // ✅ Assign back to `globalThis.mongoose`
 
   return cached.conn;
 }
