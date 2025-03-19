@@ -5,9 +5,9 @@ import { ObjectId } from "mongodb";
 export default async function RatePage({
   params,
 }: {
-  params: { citraId: string };
+  params: Promise<{ citraId: string }>;
 }) {
-  const { citraId } = params; // ✅ No need for await here
+  const { citraId } = await params; // ✅ No need for await here
 
   // Fetch course details directly from the database
   const course = await db
