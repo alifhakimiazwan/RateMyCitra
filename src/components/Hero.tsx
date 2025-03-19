@@ -31,7 +31,7 @@ export default async function Hero() {
               </p>
               {/* Title */}
               <div className="mt-5 max-w-2xl">
-                <h1 className="scroll-m-20 font-extrabold font-telegraf tracking-tight  text-white text-6xl lg:text-9xl">
+                <h1 className="scroll-m-20 font-extrabold font-telegraf tracking-tight  text-white text-5xl lg:text-9xl">
                   RateMyCitra
                 </h1>
               </div>
