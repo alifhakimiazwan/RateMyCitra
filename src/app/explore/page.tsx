@@ -5,8 +5,6 @@ import SearchBar from "@/components/SearchBar";
 export default async function Explore() {
   await connectDB();
 
-  import { ObjectId } from "mongodb";
-
   let citras;
   try {
     citras = await Citra.aggregate([
