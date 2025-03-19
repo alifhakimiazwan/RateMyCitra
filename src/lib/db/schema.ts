@@ -15,7 +15,6 @@ const RatingSchema = new mongoose.Schema(
     slidesProvided: { type: Boolean, required: true },
     attendanceMandatory: { type: Boolean, required: true },
     grade: { type: String, required: true },
-    tags: { type: [String], validate: (v) => v.length <= 3 },
     review: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
   },

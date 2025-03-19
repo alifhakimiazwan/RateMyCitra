@@ -1,26 +1,31 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable.");
+interface MongooseCache {
+  conn: mongoose.Connection | null;
+  promise: Promise<mongoose.Connection> | null;
 }
 
-const cached = global.mongoose || { conn: null, promise: null };
+// ✅ Fix: Explicitly declare `global.mongoose`
+declare global {
+  var mongoose: MongooseCache | undefined;
+}
+
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
 export async function connectDB() {
-  if (cached.conn) return cached.conn; // Return cached connection
+  if (cached.conn) return cached.conn; // ✅ Return cached connection if exists
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(MONGODB_URI!, {
-        // REMOVE useNewUrlParser and useUnifiedTopology, they are no longer needed
+      .connect(process.env.MONGODB_URI!, {
         dbName: "RateMyCitra",
+        bufferCommands: false,
       })
-      .then((mongoose) => mongoose);
-
-    cached.conn = await cached.promise;
+      .then((m) => m.connection);
   }
+
+  cached.conn = await cached.promise;
+  global.mongoose = cached; // ✅ Assign back to `global.mongoose`
 
   return cached.conn;
 }
