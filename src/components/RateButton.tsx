@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 interface RateButtonProps {
-  citraId: number;
+  citraId: string;
 }
 
 export default function RateButton({ citraId }: RateButtonProps) {
