@@ -5,6 +5,14 @@ import { connectDB } from "@/lib/db/mongodb";
 
 export async function POST(req: Request) {
   try {
+    const contentType = req.headers.get("content-type") || "";
+    if (!contentType.startsWith("application/json")) {
+      return NextResponse.json(
+        { error: "Invalid Content-Type" },
+        { status: 400 }
+      );
+    }
+
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -15,7 +23,6 @@ export async function POST(req: Request) {
     const data = await req.json();
     if (!data) throw new Error("Request body is missing");
 
-    // Insert into MongoDB
     await db.collection("ratings").insertOne({
       userId,
       citraId: data.citraId,
