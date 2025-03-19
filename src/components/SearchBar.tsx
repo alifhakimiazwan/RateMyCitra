@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,47 +17,28 @@ interface Subject {
   totalRatings: number;
   takeAgainPercentage: number;
   averageDifficulty: number;
-  // Add other relevant fields here
 }
 
 export default function SearchBar({ subjects }: { subjects: Subject[] }) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const queryFromURL = searchParams.get("query") || "";
-  const [query, setQuery] = useState(queryFromURL);
+  const [query, setQuery] = useState("");
   const [filteredSubjects, setFilteredSubjects] = useState(subjects);
 
   useEffect(() => {
-    const filtered = subjects.filter(
-      (subject) =>
-        subject.name.toLowerCase().includes(query.toLowerCase()) ||
-        subject.courseCode.toLowerCase().includes(query.toLowerCase())
+    setFilteredSubjects(
+      subjects.filter(
+        (subject) =>
+          subject.name.toLowerCase().includes(query.toLowerCase()) ||
+          subject.courseCode.toLowerCase().includes(query.toLowerCase())
+      )
     );
-    setFilteredSubjects(filtered);
   }, [query, subjects]);
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-
-    // Update URL parameters without refreshing the page
-    const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set("query", value);
-    } else {
-      params.delete("query");
-    }
-    replace(`${pathname}?${params.toString()}`);
-  };
 
   return (
     <div>
       <Input
         type="text"
         value={query}
-        onChange={handleSearch}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder="Search subjects..."
         className="w-full mb-6"
       />
@@ -68,11 +48,7 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
           <Card key={subject._id} className="w-full px-4 py-6 mt-4">
             <CardContent className="flex justify-between items-center">
               <div>
-                <Link
-                  href={`/citra/${subject._id.toString()}`}
-                  passHref
-                  className="block"
-                >
+                <Link href={`/citra/${subject._id}`} className="block">
                   <h2 className="text-xl font-semibold font-telegraf">
                     {subject.courseCode}
                   </h2>
