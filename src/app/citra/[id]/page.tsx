@@ -6,13 +6,13 @@ import CitraReviews from "@/components/CitraReviews";
 import BackButton from "@/components/BackButton";
 import { Badge } from "@/components/ui/badge";
 
-interface PageProps {
+export default async function CitraDetails({
+  params,
+}: {
   params: { id: string };
-}
-
-export default async function CitraDetails({ params }: PageProps) {
+}) {
   await connectDB();
-  if (!params?.id) {
+  if (!params?.id || !ObjectId.isValid(params.id)) {
     return <p className="text-red-500">Invalid Citra ID</p>;
   }
 
