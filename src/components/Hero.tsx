@@ -26,18 +26,18 @@ export default async function Hero() {
         <div className="relative z-10 ">
           <div className="container py-4 lg:py-16">
             <div className="max-w-2xl text-center mx-auto">
-              <p className="font-telegraf text-white font-bold text-lg">
+              <p className="font-telegraf text-white font-bold text-sm lg:text-lg ">
                 Anonymously review Citra subjects using
               </p>
               {/* Title */}
               <div className="mt-5 max-w-2xl">
-                <h1 className="scroll-m-20 text-4xl font-extrabold font-telegraf tracking-tight  text-white md:text-9xl">
+                <h1 className="scroll-m-20 font-extrabold font-telegraf tracking-tight  text-white text-6xl lg:text-9xl">
                   RateMyCitra
                 </h1>
               </div>
               {/* End Title */}
               <div className="mt-5 max-w-3xl">
-                <p className="text-md text-muted-foreground text-white">
+                <p className="text-sm text-muted-foreground text-white">
                   Discover the best elective subjects Citra with insights from
                   past students and alumni. Explore ratings, reviews, and
                   feedback to make informed choices for your academic journey.
