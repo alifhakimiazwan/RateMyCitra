@@ -7,7 +7,7 @@ import BackButton from "@/components/BackButton";
 import { Badge } from "@/components/ui/badge";
 
 interface PageProps {
-  params: { id: number };
+  params: { id: string };
 }
 
 export default async function CitraDetails({ params }: PageProps) {
