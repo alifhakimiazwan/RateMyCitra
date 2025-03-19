@@ -7,7 +7,7 @@ interface MongooseCache {
 
 // ✅ Fix: Explicitly declare `global.mongoose`
 declare global {
-  var mongoose: MongooseCache | undefined;
+  var mongoose: MongooseCache || undefined;
 }
 
 const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
