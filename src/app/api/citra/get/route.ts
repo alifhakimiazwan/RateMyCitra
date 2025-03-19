@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/db/mongodb";
+import { connectDB } from "@/lib/db/mongodb";
 import { Citra } from "@/lib/db/schema";
 import { Rating } from "@/lib/db/schema";
 

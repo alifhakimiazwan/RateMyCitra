@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 
 import Header from "./Header";
-import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGO_URI) {
+if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable.");
 }
 
@@ -13,7 +13,7 @@ export async function connectDB() {
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(MONGO_URI, {
+      .connect(MONGODB_URI!, {
         // REMOVE useNewUrlParser and useUnifiedTopology, they are no longer needed
         dbName: "RateMyCitra",
       })

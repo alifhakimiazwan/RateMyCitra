@@ -1,4 +1,4 @@
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.MONGO_URI);
+const client = new MongoClient(process.env.MONGODB_URI!);
 export const db = client.db("RateMyCitra");

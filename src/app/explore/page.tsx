@@ -1,12 +1,6 @@
 import { connectDB } from "@/lib/db/mongodb";
 import { Citra } from "@/lib/db/schema";
 import SearchBar from "@/components/SearchBar";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination";
 
 export default async function Explore({
   searchParams,

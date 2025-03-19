@@ -3,7 +3,7 @@ import { db } from "@/lib/db/db";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/mongodb";
 
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const { userId } = await auth();
     if (!userId) {
