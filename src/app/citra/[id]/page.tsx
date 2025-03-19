@@ -9,12 +9,12 @@ import { Badge } from "@/components/ui/badge";
 export default async function CitraDetails({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ _id: string }>;
 }) {
-  const { id } = await params; // ✅ Destructure params first
+  const { _id } = await params; // ✅ Destructure params first
 
-  if (!id) {
-    return <p className="text-red-500">Invalid Citra ID: {id}</p>;
+  if (!_id) {
+    return <p className="text-red-500">Invalid Citra ID: {_id}</p>;
   } // ✅ Await params to resolve it
 
   await connectDB();
@@ -22,7 +22,7 @@ export default async function CitraDetails({
   let citra;
   try {
     citra = await Citra.aggregate([
-      { $match: { _id: new ObjectId(params.id) } },
+      { $match: { _id: new ObjectId(_id) } },
       {
         $lookup: {
           from: "ratings",
