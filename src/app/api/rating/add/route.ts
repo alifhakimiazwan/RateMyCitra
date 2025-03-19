@@ -1,9 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db/mongodb";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const contentType = req.headers.get("content-type") || "";
     if (!contentType.startsWith("application/json")) {
