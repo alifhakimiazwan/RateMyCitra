@@ -9,13 +9,9 @@ export default async function Explore({
 }) {
   await connectDB();
 
-  const page = parseInt(searchParams.page) || 1;
+  const page = parseInt(searchParams.page ?? "1", 10);
   const limit = 10;
   const skip = (page - 1) * limit;
-
-  // Get total count of Citra courses
-  const totalCitra = await Citra.countDocuments();
-  const totalPages = Math.ceil(totalCitra / limit);
 
   const citraSubjects = await Citra.aggregate([
     { $sort: { name: 1 } }, // Sort alphabetically

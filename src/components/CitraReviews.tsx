@@ -3,6 +3,14 @@ import { connectDB } from "@/lib/db/mongodb";
 import { Rating } from "@/lib/db/schema";
 import { format } from "date-fns"; // Install with npm install date-fns
 
+interface Rating {
+  createdAt: string; // Assuming it's an ISO date string
+  review: string;
+  grade?: string; // Optional since you have a fallback "N/A"
+  takeAgain: boolean;
+  difficulty: number;
+}
+
 export default async function CitraReviews({
   courseCode,
 }: {
@@ -20,7 +28,7 @@ export default async function CitraReviews({
       <h2 className="text-xl font-bold font-telegraf">User Reviews</h2>
       {ratings.length > 0 ? (
         <div className="mt-4 space-y-4">
-          {ratings.map((rating: any, index: number) => (
+          {ratings.map((rating: Rating, index: number) => (
             <Card key={index} className="rounded-2xl border">
               <CardContent>
                 {/* Date at the top */}

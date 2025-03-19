@@ -1,13 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
-
 import Header from "./Header";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default async function Hero() {
-  const { userId } = await auth();
-  const isAuth = !!userId;
   return (
     <div className="px-7">
       {" "}
@@ -26,7 +22,7 @@ export default async function Hero() {
         <div className="relative z-10">
           <div className="container py-4 lg:py-16">
             <div className="max-w-2xl text-center mx-auto">
-              <p className="">Don't know which citra to pick? Use</p>
+              <p className="">Anonymously review Citra subjects using</p>
               {/* Title */}
               <div className="mt-5 max-w-2xl">
                 <h1 className="scroll-m-20 text-4xl font-extrabold font-telegraf tracking-tight lg:text-5xl">

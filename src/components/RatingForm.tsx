@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "axios";
@@ -29,6 +29,7 @@ import {
 
 const formSchema = z.object({
   courseCode: z.string().min(4, "Course code is required"),
+  citraId: z.string(),
   difficulty: z.number().min(1).max(5),
   mode: z.enum(["Online", "Face-to-Face"]),
   takeAgain: z.enum(["true", "false"]),
@@ -37,16 +38,36 @@ const formSchema = z.object({
   grade: z.enum(["A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"]),
   review: z.string().min(10, "Review must be at least 10 characters"),
 });
+type FormValues = z.infer<typeof formSchema>; // Generate TypeScript type
 
-export default function RatingForm({ course }) {
+interface Citra {
+  _id: string;
+  courseCode: string;
+  name: string;
+  faculty: string;
+  citraType: string;
+}
+
+interface RatingData {
+  difficulty: number;
+  mode: "Online" | "Face-to-Face";
+  attendanceMandatory: "true" | "false";
+  takeAgain: "true" | "false";
+  grade: string;
+  review: string;
+  citraId: string;
+}
+
+export default function RatingForm({ course }: { course: Citra }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [difficultyValue, setDifficultyValue] = useState(3);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       courseCode: course.courseCode,
+      citraId: course.courseCode,
       difficulty: 3,
       mode: "Online",
       takeAgain: "false",
@@ -57,7 +78,7 @@ export default function RatingForm({ course }) {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data: RatingData) => {
     setLoading(true);
     try {
       const response = await axios.post("/api/rating/add", {

@@ -8,7 +8,20 @@ import RateButton from "@/components/RateButton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
-export default function SearchBar({ subjects }: { subjects: any[] }) {
+interface Subject {
+  _id: number;
+  name: string;
+  courseCode: string;
+  citraType: string;
+  faculty: string;
+  mode: string;
+  totalRatings: number;
+  takeAgainPercentage: number;
+  averageDifficulty: number;
+  // Add other relevant fields here
+}
+
+export default function SearchBar({ subjects }: { subjects: Subject[] }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -93,10 +106,7 @@ export default function SearchBar({ subjects }: { subjects: any[] }) {
                   </p>
                   <p className="text-xs sm:text-sm ml-1">/ 5</p>
                 </div>
-                <RateButton
-                  citraId={subject._id}
-                  onClick={(e) => e.stopPropagation()}
-                />
+                <RateButton citraId={subject._id} />
               </div>
             </CardContent>
           </Card>

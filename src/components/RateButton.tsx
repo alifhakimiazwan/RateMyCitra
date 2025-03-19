@@ -4,7 +4,11 @@ import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export default function RateButton({ citraId }) {
+interface RateButtonProps {
+  citraId: number;
+}
+
+export default function RateButton({ citraId }: RateButtonProps) {
   const { userId } = useAuth();
   const router = useRouter();
 

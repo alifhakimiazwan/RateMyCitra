@@ -22,6 +22,8 @@ export default async function RatePage({
     _id: course._id.toString(), // Convert ObjectId to string
     courseCode: course.courseCode,
     name: course.name,
+    faculty: course.faculty,
+    citraType: course.citraType,
   };
 
   return (
