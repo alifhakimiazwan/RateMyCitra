@@ -13,11 +13,7 @@ export async function POST(req: Request) {
     await connectDB();
 
     const data = await req.json();
-
-    // Ensure citraId is provided
-    if (!data.citraId) {
-      return NextResponse.json({ error: "Missing citraId" }, { status: 400 });
-    }
+    if (!data) throw new Error("Request body is missing");
 
     // Insert into MongoDB
     await db.collection("ratings").insertOne({
@@ -27,7 +23,6 @@ export async function POST(req: Request) {
       difficulty: data.difficulty,
       mode: data.mode,
       takeAgain: data.takeAgain === "true",
-      slidesProvided: data.slidesProvided === "true",
       attendanceMandatory: data.attendanceMandatory === "true",
       grade: data.grade,
       review: data.review,
