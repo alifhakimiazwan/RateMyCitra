@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
+import { Loader2 } from "lucide-react";
 
 export default function Explore() {
   const [citras, setCitras] = useState([]);
@@ -25,7 +26,11 @@ export default function Explore() {
       </h1>
 
       {/* SearchBar Component */}
-      {loading ? <p>Loading...</p> : <SearchBar subjects={citras} />}
+      {loading ? (
+        <Loader2 className="animate-spin h-7 w-7" />
+      ) : (
+        <SearchBar subjects={citras} />
+      )}
     </div>
   );
 }

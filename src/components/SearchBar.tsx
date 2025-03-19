@@ -30,7 +30,7 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
   const [query, setQuery] = useState("");
   const [filteredSubjects, setFilteredSubjects] = useState(subjects);
   const [selectedCitraType, setSelectedCitraType] = useState("All");
-  const [sortOrder, setSortOrder] = useState("highest");
+  const [sortOption, setSortOption] = useState("difficulty-highest");
 
   useEffect(() => {
     let filtered = subjects.filter(
@@ -45,14 +45,23 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
       );
     }
 
-    filtered.sort((a, b) =>
-      sortOrder === "highest"
-        ? b.averageDifficulty - a.averageDifficulty
-        : a.averageDifficulty - b.averageDifficulty
-    );
+    // Extract sorting criteria and order
+    const [sortBy, order] = sortOption.split("-");
+    filtered.sort((a, b) => {
+      const isDescending = order === "highest";
+      if (sortBy === "difficulty") {
+        return isDescending
+          ? b.averageDifficulty - a.averageDifficulty
+          : a.averageDifficulty - b.averageDifficulty;
+      } else {
+        return isDescending
+          ? b.totalRatings - a.totalRatings
+          : a.totalRatings - b.totalRatings;
+      }
+    });
 
     setFilteredSubjects(filtered);
-  }, [query, selectedCitraType, sortOrder, subjects]);
+  }, [query, selectedCitraType, sortOption, subjects]);
 
   return (
     <div>
@@ -80,16 +89,22 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
           </SelectContent>
         </Select>
 
-        <Select value={sortOrder} onValueChange={setSortOrder}>
-          <SelectTrigger className="w-[250px]">
-            <SelectValue placeholder="Sort by Difficulty" />
+        <Select value={sortOption} onValueChange={setSortOption}>
+          <SelectTrigger className="w-[300px]">
+            <SelectValue placeholder="Sort Subjects" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="highest">
-              Sort by Difficulty (Highest to Lowest)
+            <SelectItem value="difficulty-highest">
+              Difficulty (Highest to Lowest)
             </SelectItem>
-            <SelectItem value="lowest">
-              Sort by Difficulty (Lowest to Highest)
+            <SelectItem value="difficulty-lowest">
+              Difficulty (Lowest to Highest)
+            </SelectItem>
+            <SelectItem value="ratings-highest">
+              Total Ratings (Highest to Lowest)
+            </SelectItem>
+            <SelectItem value="ratings-lowest">
+              Total Ratings (Lowest to Highest)
             </SelectItem>
           </SelectContent>
         </Select>
@@ -132,7 +147,7 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
 
               <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
                 <div className="border border-gray-400 sm:border-gray-300 px-2 sm:px-4 py-1 sm:py-2 rounded-lg flex items-center">
-                  <p className="text-xs hidden sm:block">Difficulty:</p>
+                  <p className="text-xs hidden sm:block">Difficulty</p>
                   <p className="text-sm sm:text-lg font-bold md:ml-2">
                     {subject.averageDifficulty.toFixed(1)}
                   </p>
