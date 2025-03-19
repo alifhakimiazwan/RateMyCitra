@@ -6,6 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import RateButton from "@/components/RateButton";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Subject {
   _id: string;
@@ -22,16 +29,36 @@ interface Subject {
 export default function SearchBar({ subjects }: { subjects: Subject[] }) {
   const [query, setQuery] = useState("");
   const [filteredSubjects, setFilteredSubjects] = useState(subjects);
+  const [selectedCitraType, setSelectedCitraType] = useState("All");
+  const [sortOrder, setSortOrder] = useState("highest");
 
   useEffect(() => {
-    setFilteredSubjects(
-      subjects.filter(
-        (subject) =>
-          subject.name.toLowerCase().includes(query.toLowerCase()) ||
-          subject.courseCode.toLowerCase().includes(query.toLowerCase())
-      )
+    let filtered = subjects.filter(
+      (subject) =>
+        subject.name.toLowerCase().includes(query.toLowerCase()) ||
+        subject.courseCode.toLowerCase().includes(query.toLowerCase())
     );
-  }, [query, subjects]);
+
+    if (selectedCitraType !== "All") {
+      filtered = filtered.filter(
+        (subject) => subject.citraType === selectedCitraType
+      );
+    }
+
+    filtered.sort((a, b) => {
+      if (sortOrder === "highest") {
+        return b.averageDifficulty - a.averageDifficulty;
+      } else if (sortOrder === "lowest") {
+        return a.averageDifficulty - b.averageDifficulty;
+      } else if (sortOrder === "ratings-highest") {
+        return b.totalRatings - a.totalRatings;
+      } else {
+        return a.totalRatings - b.totalRatings;
+      }
+    });
+
+    setFilteredSubjects(filtered);
+  }, [query, selectedCitraType, sortOrder, subjects]);
 
   return (
     <div>
@@ -42,6 +69,43 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
         placeholder="Search subjects..."
         className="w-full mb-6"
       />
+
+      <div className="flex flex-wrap gap-4 mb-6">
+        <Select value={selectedCitraType} onValueChange={setSelectedCitraType}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Select Citra Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Citra Types</SelectItem>
+            <SelectItem value="C1">C1</SelectItem>
+            <SelectItem value="C2">C2</SelectItem>
+            <SelectItem value="C3">C3</SelectItem>
+            <SelectItem value="C4">C4</SelectItem>
+            <SelectItem value="C5">C5</SelectItem>
+            <SelectItem value="C6">C6</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={sortOrder} onValueChange={setSortOrder}>
+          <SelectTrigger className="w-[250px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="highest">
+              Sort by Difficulty (Highest to Lowest)
+            </SelectItem>
+            <SelectItem value="lowest">
+              Sort by Difficulty (Lowest to Highest)
+            </SelectItem>
+            <SelectItem value="ratings-highest">
+              Sort by Total Ratings (Highest to Lowest)
+            </SelectItem>
+            <SelectItem value="ratings-lowest">
+              Sort by Total Ratings (Lowest to Highest)
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       <div className="space-y-4">
         {filteredSubjects.map((subject) => (
