@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 interface Subject {
-  _id: number;
+  _id: string;
   name: string;
   courseCode: string;
   citraType: string;
@@ -68,7 +68,11 @@ export default function SearchBar({ subjects }: { subjects: Subject[] }) {
           <Card key={subject._id} className="w-full px-4 py-6 mt-4">
             <CardContent className="flex justify-between items-center">
               <div>
-                <Link href={`/citra/${subject._id}`} passHref className="block">
+                <Link
+                  href={`/citra/${subject._id.toString()}`}
+                  passHref
+                  className="block"
+                >
                   <h2 className="text-xl font-semibold font-telegraf">
                     {subject.courseCode}
                   </h2>

@@ -6,15 +6,18 @@ import CitraReviews from "@/components/CitraReviews";
 import BackButton from "@/components/BackButton";
 import { Badge } from "@/components/ui/badge";
 
-export default async function CitraDetails({
-  params,
-}: {
+interface PageProps {
   params: { id: string };
-}) {
+}
+
+export default async function CitraDetails({ params }: PageProps) {
+  const { id } = params; // ✅ Destructure params first
+
+  if (!id) {
+    return <p className="text-red-500">Invalid Citra ID: {id}</p>;
+  } // ✅ Await params to resolve it
+
   await connectDB();
-  if (!params?.id || !ObjectId.isValid(params.id)) {
-    return <p className="text-red-500">Invalid Citra ID</p>;
-  }
 
   let citra;
   try {
