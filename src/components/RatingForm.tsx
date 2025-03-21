@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -25,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   courseCode: z.string().min(4, "Course code is required"),
@@ -36,35 +36,32 @@ const formSchema = z.object({
   slidesProvided: z.enum(["true", "false"]),
   attendanceMandatory: z.enum(["true", "false"]),
   grade: z.enum(["A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"]),
-  keywords: z.array(z.string()).max(3, "You can select up to 3 keywords"),
+  review: z.string().min(10, "Review must be at least 10 characters"),
 });
+type FormValues = z.infer<typeof formSchema>; // Generate TypeScript type
 
-type FormValues = z.infer<typeof formSchema>;
+interface Citra {
+  _id: string;
+  courseCode: string;
+  name: string;
+  faculty: string;
+  citraType: string;
+}
 
-const keywordOptions = [
-  "Tough Grader",
-  "Group Projects",
-  "Assignment Heavy",
-  "Easy A",
-  "Lots of Reading",
-  "Interactive Class",
-  "No Attendance Required",
-  "Strict Attendance Policy",
-];
+interface RatingData {
+  difficulty: number;
+  mode: "Online" | "Face-to-Face";
+  attendanceMandatory: "true" | "false";
+  takeAgain: "true" | "false";
+  grade: string;
+  review: string;
+  citraId: string;
+}
 
-export default function RatingForm({ course }: { course: any }) {
+export default function RatingForm({ course }: { course: Citra }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [difficultyValue, setDifficultyValue] = useState(3);
-  const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
-
-  const handleKeywordToggle = (keyword: string) => {
-    setSelectedKeywords((prev) =>
-      prev.includes(keyword)
-        ? prev.filter((k) => k !== keyword)
-        : [...prev, keyword]
-    );
-  };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -77,17 +74,16 @@ export default function RatingForm({ course }: { course: any }) {
       slidesProvided: "false",
       attendanceMandatory: "false",
       grade: "A",
-      keywords: [],
+      review: "",
     },
   });
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data: RatingData) => {
     setLoading(true);
     try {
       const response = await axios.post("/api/rating/add", {
         ...data,
         citraId: course.courseCode,
-        keywords: selectedKeywords,
       });
       if (response.status === 201) {
         router.push("/explore");
@@ -103,11 +99,13 @@ export default function RatingForm({ course }: { course: any }) {
     <div className="max-w-lg mx-auto bg-white p-6 shadow rounded-lg">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Course Code */}
           <FormItem>
             <FormLabel>Course</FormLabel>
             <Input value={`${course.name} (${course.courseCode})`} disabled />
           </FormItem>
 
+          {/* Difficulty Slider */}
           <FormField
             control={form.control}
             name="difficulty"
@@ -125,13 +123,37 @@ export default function RatingForm({ course }: { course: any }) {
                     }}
                     defaultValue={[field.value]}
                   />
-                  <span className="text-sm font-medium">{difficultyValue}</span>
+                  <span className="text-sm font-medium">{difficultyValue}</span>{" "}
+                  {/* Displaying value */}
                 </div>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          {/* Mode (Online / Face-to-Face) */}
+          <FormField
+            control={form.control}
+            name="mode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mode</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="flex gap-4"
+                  >
+                    <RadioGroupItem value="Online" id="online" />
+                    <FormLabel htmlFor="online">Online</FormLabel>
+                    <RadioGroupItem value="Face-to-Face" id="face-to-face" />
+                    <FormLabel htmlFor="face-to-face">Face-to-Face</FormLabel>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="attendanceMandatory"
@@ -210,36 +232,23 @@ export default function RatingForm({ course }: { course: any }) {
             )}
           />
 
+          {/* Review Textarea */}
           <FormField
             control={form.control}
-            name="keywords"
-            render={() => (
+            name="review"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Select Keywords (Choose up to 3)</FormLabel>
-                <div className="grid grid-cols-2 gap-2">
-                  {keywordOptions.map((keyword) => (
-                    <div key={keyword} className="flex items-center space-x-2">
-                      <Checkbox
-                        checked={selectedKeywords.includes(keyword)}
-                        onCheckedChange={() => handleKeywordToggle(keyword)}
-                        disabled={
-                          selectedKeywords.length >= 3 &&
-                          !selectedKeywords.includes(keyword)
-                        }
-                      />
-                      <span>{keyword}</span>
-                    </div>
-                  ))}
-                </div>
+                <FormLabel>Review</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Write your experience..." {...field} />
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button
-            type="submit"
-            disabled={loading || selectedKeywords.length === 0}
-            className="w-full"
-          >
+          {/* Submit Button */}
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Submitting..." : "Submit"}
           </Button>
         </form>
