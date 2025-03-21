@@ -111,7 +111,7 @@ export default function RatingForm({ course }: { course: Citra }) {
             name="difficulty"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Difficulty (1-5)</FormLabel>
+                <FormLabel>Difficulty (1 [Easy] - 5 [Hard])</FormLabel>
                 <div className="flex items-center gap-2">
                   <Slider
                     min={1}
