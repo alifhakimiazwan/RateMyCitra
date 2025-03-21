@@ -43,11 +43,11 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased `}
           >
             {MAINTENANCE_MODE ? (
-              <div className="text-center p-6 font-telegraf flex items-center justify-center min-h-screen bg-gray-100">
+              <div className="text-center p-6 font-telegraf flex flex-col items-center justify-center min-h-screen bg-gray-100">
                 <h1 className="text-2xl font-bold">
                   🚧 Building in Progress 🚧
                 </h1>
-                <p className="mt-2 text-gray-600">
+                <p className="mt-2 text-gray-600 max-w-md">
                   Due to concerns about maintaining a fair and constructive
                   review system, we have temporarily paused submissions while we
                   enhance our moderation process. Thank you for your patience as
