@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 // Enable/disable maintenance mode
-const MAINTENANCE_MODE = true;
+const MAINTENANCE_MODE = false;
 
 export default function RootLayout({
   children,
@@ -40,15 +40,18 @@ export default function RootLayout({
       <Providers>
         <html lang="en">
           <body
-            className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased flex items-center justify-center min-h-screen bg-gray-100`}
+            className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased `}
           >
             {MAINTENANCE_MODE ? (
-              <div className="text-center p-6 font-telegraf">
+              <div className="text-center p-6 font-telegraf flex items-center justify-center min-h-screen bg-gray-100">
                 <h1 className="text-2xl font-bold">
                   🚧 Building in Progress 🚧
                 </h1>
                 <p className="mt-2 text-gray-600">
-                  Currently making improvements. Check back soon!
+                  Due to concerns about maintaining a fair and constructive
+                  review system, we have temporarily paused submissions while we
+                  enhance our moderation process. Thank you for your patience as
+                  we improve the platform!
                 </p>
               </div>
             ) : (
