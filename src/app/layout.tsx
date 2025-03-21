@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
 const telegraf = localFont({
   src: "./fonts/TelegrafRegular.otf",
   variable: "--font-telegraf",
@@ -25,6 +26,9 @@ export const metadata: Metadata = {
   title: "RateMyCitra",
   description: "Review and explore citra subjects",
 };
+
+// Enable/disable maintenance mode
+const MAINTENANCE_MODE = true;
 
 export default function RootLayout({
   children,
@@ -36,11 +40,24 @@ export default function RootLayout({
       <Providers>
         <html lang="en">
           <body
-            className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased`}
+            className={`${geistSans.variable} ${geistMono.variable} ${telegraf.variable} antialiased flex items-center justify-center min-h-screen bg-gray-100`}
           >
-            {children}
-            <Analytics />
-            <Toaster />
+            {MAINTENANCE_MODE ? (
+              <div className="text-center p-6 font-telegraf">
+                <h1 className="text-2xl font-bold">
+                  🚧 Building in Progress 🚧
+                </h1>
+                <p className="mt-2 text-gray-600">
+                  Currently making improvements. Check back soon!
+                </p>
+              </div>
+            ) : (
+              <>
+                {children}
+                <Analytics />
+                <Toaster />
+              </>
+            )}
           </body>
         </html>
       </Providers>
