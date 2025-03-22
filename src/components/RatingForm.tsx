@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import toast, { Toaster } from "react-hot-toast";
 const formSchema = z.object({
   courseCode: z.string().min(4, "Course code is required"),
   citraId: z.string(),
@@ -48,15 +48,51 @@ interface Citra {
   citraType: string;
 }
 
-interface RatingData {
-  difficulty: number;
-  mode: "Online" | "Face-to-Face";
-  attendanceMandatory: "true" | "false";
-  takeAgain: "true" | "false";
-  grade: string;
-  review: string;
-  citraId: string;
-}
+// const restrictedWords = [
+//   "bodoh",
+//   "tak guna",
+//   "sampah",
+//   "teruk",
+//   "gagal",
+//   "malas",
+//   "tak adil",
+//   "menyusahkan",
+//   "buang masa",
+//   "sial",
+//   "celaka",
+//   "bangang",
+//   "babi",
+//   "anjing",
+//   "maki",
+//   "tak faham",
+//   "tak reti",
+//   "pemalas",
+//   "terlampau susah",
+//   "soalan merepek",
+//   "soalan bodoh",
+//   "mustahil nak lulus",
+//   "tak boleh skor",
+//   "subjek tak berguna",
+//   "membazir masa",
+//   "assignment tak masuk akal",
+//   "buang kredit",
+
+//   // Lecturer titles to block any name after them
+//   "\\bDr\\.?\\b",
+//   "\\bProfessor\\b",
+//   "\\bProf\\.?\\b",
+//   "\\bSir\\b",
+//   "\\bMadam\\b",
+//   "\\bEncik\\b",
+//   "\\bPuan\\b",
+//   "\\bCikgu\\b",
+//   "\\bUstaz\\b",
+//   "\\bUstazah\\b",
+//   "\\bTuan\\b",
+//   "\\bDatin\\b",
+//   "\\bDato'\\b",
+//   "\\bDatuk\\b",
+// ];
 
 export default function RatingForm({ course }: { course: Citra }) {
   const router = useRouter();
@@ -78,7 +114,93 @@ export default function RatingForm({ course }: { course: Citra }) {
     },
   });
 
-  const onSubmit: SubmitHandler<FormValues> = async (data: RatingData) => {
+  const containsRestrictedWords = (text: string) => {
+    console.log("Checking review:", text); // Log input text
+
+    const toxicWords = [
+      "bodoh",
+      "tak guna",
+      "sampah",
+      "teruk",
+      "gagal",
+      "malas",
+      "nigga",
+      "bangla",
+      "india",
+      "melayu",
+      "cina",
+      "type c",
+      "maki",
+      "bodoh",
+      "bodo",
+      "tak adil",
+      "menyusahkan",
+      "buang masa",
+      "sial",
+      "celaka",
+      "bangang",
+      "babi",
+      "anjing",
+      "maki",
+      "tak faham",
+      "tak reti",
+      "pemalas",
+      "terlampau susah",
+      "soalan merepek",
+      "soalan bodoh",
+      "mustahil nak lulus",
+      "tak boleh skor",
+      "subjek tak berguna",
+      "membazir masa",
+      "assignment tak masuk akal",
+      "buang kredit",
+      "tak faham",
+      "pemalas",
+      "soalan merepek",
+      "assignment tak masuk akal",
+    ];
+
+    const lecturerTitles = [
+      "Dr",
+      "Professor",
+      "Prof",
+      "Sir",
+      "Madam",
+      "Encik",
+      "Puan",
+      "Cikgu",
+      "Ustaz",
+      "Ustazah",
+      "Tuan",
+      "Datin",
+      "Dato'",
+      "Datuk",
+    ];
+
+    // Create regex patterns
+    const toxicPattern = toxicWords.join("|");
+    const lecturerPattern = lecturerTitles
+      .map((title) => `\\b${title}\\.?\\s+[A-Za-z]+`)
+      .join("|");
+
+    // Combine both
+    const pattern = `(${toxicPattern})|(${lecturerPattern})`;
+    const regex = new RegExp(pattern, "gi");
+
+    const match = text.match(regex);
+    console.log("Matched words:", match); // Log matched words
+
+    return match !== null;
+  };
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    console.log("Submitting review:", data.review); // Log review content
+
+    if (containsRestrictedWords(data.review)) {
+      toast.error("Submission blocked due to restricted words!");
+      return; // Prevent submission
+    }
+
     setLoading(true);
     try {
       const response = await axios.post("/api/rating/add", {
@@ -233,12 +355,18 @@ export default function RatingForm({ course }: { course: Citra }) {
           />
 
           {/* Review Textarea */}
+          {/* Review Textarea */}
           <FormField
             control={form.control}
             name="review"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Review</FormLabel>
+                {/* Rules Note */}
+                <p className="text-sm text-red-500">
+                  ⚠ No hateful comments, no mentioning lecturers' names, and
+                  avoid toxic language.
+                </p>
                 <FormControl>
                   <Textarea placeholder="Write your experience..." {...field} />
                 </FormControl>
