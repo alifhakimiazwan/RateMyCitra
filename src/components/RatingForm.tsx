@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 const formSchema = z.object({
   courseCode: z.string().min(4, "Course code is required"),
   citraId: z.string(),
@@ -364,7 +364,7 @@ export default function RatingForm({ course }: { course: Citra }) {
                 <FormLabel>Review</FormLabel>
                 {/* Rules Note */}
                 <p className="text-sm text-red-500">
-                  ⚠ No hateful comments, no mentioning lecturers' names, and
+                  ⚠ No hateful comments, no mentioning lecturers names, and
                   avoid toxic language.
                 </p>
                 <FormControl>
