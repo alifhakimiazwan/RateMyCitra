@@ -33,3 +33,20 @@ const CitraSchema = new mongoose.Schema({
 
 export const Citra =
   mongoose.models.Citra || mongoose.model("Citra", CitraSchema);
+
+const ReportSchema = new mongoose.Schema(
+  {
+    reviewId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rating", // Reference the Rating (review) being reported
+      required: true,
+    },
+    userId: { type: String, required: true }, // User who reported the review
+    reason: { type: String, required: true }, // Reason for reporting
+    createdAt: { type: Date, default: Date.now },
+  },
+  { timestamps: true }
+);
+
+export const Report =
+  mongoose.models.Report || mongoose.model("Report", ReportSchema);

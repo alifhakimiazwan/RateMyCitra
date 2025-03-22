@@ -2,8 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { connectDB } from "@/lib/db/mongodb";
 import { Rating } from "@/lib/db/schema";
 import { format } from "date-fns"; // Install with npm install date-fns
+import ReportButton from "./ReportButton";
 
 interface Rating {
+  _id: string;
   createdAt: string; // Assuming it's an ISO date string
   review: string;
   grade?: string; // Optional since you have a fallback "N/A"
@@ -31,10 +33,13 @@ export default async function CitraReviews({
           {ratings.map((rating: Rating, index: number) => (
             <Card key={index} className="rounded-2xl border">
               <CardContent>
-                {/* Date at the top */}
-                <p className="text-sm font-semibold text-gray-500 font-telegraf">
-                  {format(new Date(rating.createdAt), "dd MMM yyyy")}
-                </p>
+                {/* Flex container for Date and Report Button */}
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-semibold text-gray-500 font-telegraf">
+                    {format(new Date(rating.createdAt), "dd MMM yyyy")}
+                  </p>
+                  <ReportButton reviewId={rating._id.toString()} />
+                </div>
 
                 {/* Review in the middle */}
                 <p className="mt-3 text-md font-telegraf font-black">

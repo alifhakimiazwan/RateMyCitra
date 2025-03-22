@@ -5,7 +5,8 @@ import RateButton from "@/components/RateButton";
 import CitraReviews from "@/components/CitraReviews";
 import BackButton from "@/components/BackButton";
 import { Badge } from "@/components/ui/badge";
-
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 export default async function CitraDetails({
   params,
 }: {
@@ -155,6 +156,14 @@ export default async function CitraDetails({
           <p>{subject.ratings.quality}</p>
         </div>
       </div>
+      <Alert className="mt-6" variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          If you come across any reviews containing hateful comments, lecturer
+          names, or toxic language, please report them immediately!{" "}
+        </AlertDescription>
+      </Alert>
       <CitraReviews courseCode={subject.courseCode} />
     </div>
   );
