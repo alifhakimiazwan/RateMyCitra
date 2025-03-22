@@ -23,7 +23,11 @@ export default function ReportButton({ reviewId }: { reviewId: string }) {
       toast.success("Review reported successfully");
       router.push(`/explore`);
     } catch (error) {
-      toast.error(error.response?.data?.error || "Failed to report review");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.error || "Failed to report review");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
