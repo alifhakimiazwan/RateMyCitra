@@ -46,19 +46,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-export async function GET() {
-  await connectDB();
-  try {
-    const reports = await Report.find()
-      .populate("reviewId") // Get the actual review details
-      .sort({ createdAt: -1 });
-
-    return NextResponse.json(reports);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch reported reviews" },
-      { status: 500 }
-    );
-  }
-}
